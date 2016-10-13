@@ -13,8 +13,9 @@ if (!$env || !$service) {
     exit;
 }
 
-$url = ('production' === $env) ? 'https://api.mygo1.com/v3' : "http://api.{$env}.mygo1.com/v3";
+$url = ('production' === $env) ? 'https://api.mygo1.com/v3' : "http://api-{$env}.mygo1.com/v3";
 $url .= "/{$service}-service/install";
+
 $try = 0;
 
 while (true) {
