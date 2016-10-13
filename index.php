@@ -18,7 +18,7 @@ $url .= "/{$service}-service/install";
 $try = 0;
 
 while (true) {
-    if (10 >= $try++) {
+    if (20 >= $try++) {
         $client = new Client;
         $response = $client->get($url, ['http_errors' => false]);
         if (!in_array($response->getStatusCode(), [200, 204, 400])) {
@@ -33,4 +33,5 @@ while (true) {
     }
 
     echo "[ERROR] Too many fails.\n";
+    break;
 }
