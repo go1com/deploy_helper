@@ -9,7 +9,8 @@ require_once __DIR__ . '/vendor/autoload.php';
 $env = isset($argv[1]) ? $argv[1] : null;
 $service = isset($argv[2]) ? $argv[2] : null;
 if (!$env || !$service) {
-    echo "Usage: php deploy_helper.phar ENV SERVICE. Example: php deploy_helper.phar production rules";
+    echo "Usage: php deploy_helper.phar ENV SERVICE. Example: php deploy_helper.phar production rules\n";
+    exit;
 }
 
 $url = ('production' === $env) ? 'https://api.mygo1.com/v3' : "http://api.{$env}.mygo1.com/v3";
