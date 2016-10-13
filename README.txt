@@ -5,3 +5,7 @@ Deploy helper
 
 1. Install https://github.com/clue/phar-composer
 2. Build the source code: phar-composer build ./ -v
+
+## Usage
+
+php deploy_helper.php production rules
