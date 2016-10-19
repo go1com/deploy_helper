@@ -1,5 +1,13 @@
 {
+  "name": "go1/deploy-helper",
+  "autoload": {
+    "psr-4": {
+      "go1\\deploy_helper\\": "./"
+    }
+  },
   "require": {
-    "guzzlehttp/guzzle": "^6.0"
+    "guzzlehttp/guzzle": "^6.0",
+    "symfony/console": "^3.0",
+    "symfony/yaml": "^3.0"
   }
 }
