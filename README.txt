@@ -6,7 +6,19 @@ Deploy helper
 1. Install https://github.com/clue/phar-composer
 2. Build the source code: phar-composer build ./ -v
 
-## Usage
+## Get the command
 
-curl -sSL -o deploy_helper.phar https://github.com/go1com/deploy_helper/releases/download/v0.1/deploy_helper.phar
-php deploy_helper.php production rules
+curl -sSL -o deploy_helper.phar https://github.com/go1com/deploy_helper/releases/download/v0.2/deploy_helper.phar
+
+## Run /install
+
+php deploy_helper.phar service:endpoint rules production
+
+## Import endpoints
+
+php deploy_helper.phar service:endpoint
+    --endpoint=http://api-dev.mygo1.com/v3/endpoint-service/
+    --source=/path/to/user/resources/swagger/
+    --service=user
+    --username=ADMIN_USERNAME
+    --password=ADMIN_PASSWORD
