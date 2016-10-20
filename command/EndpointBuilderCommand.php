@@ -12,6 +12,15 @@ use Symfony\Component\Yaml\Yaml;
 
 class EndpointBuilderCommand extends Command
 {
+    private $client;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->client = new Client(['http_errors' => true]);
+    }
+
     protected function configure()
     {
         $this
@@ -57,38 +66,68 @@ class EndpointBuilderCommand extends Command
             }
         }
 
-        $this->import($service, $source, $endpointUrl, $access, $timestamp, $jwt);
+        $this->push($service, $source, $endpointUrl, $access, $timestamp, $jwt);
     }
 
-    private function import($service, $source, $endpointUrl, $access, $timestamp, $jwt = null)
+    private function push($service, $source, $endpointUrl, $access, $timestamp, $jwt = null)
     {
         $headers = $jwt ? ['Authorization' => "Bearer $jwt"] : [];
 
         foreach (glob("$source/resources/*.*") as $file) {
-            $json = file_get_contents($file);
-            $json = strpos($file, '.yml') ? Yaml::parse($json) : json_decode($json, true);
-            if (!$json) {
-                throw new RuntimeException("Failed to read: $file");
-            }
+            return $this->pushEndpoints($file, $endpointUrl, $service, $access, $headers, $timestamp);
+        }
 
-            foreach ($json as $pattern => $paths) {
-                foreach ($paths as $method => $endpoint) {
-                    (new Client(['http_errors' => true]))->put("{$endpointUrl}/endpoint/{$service}/{$method}/$access", [
-                        'headers' => $headers,
-                        'json'    => $json = [
-                            'pattern'     => $pattern,
-                            'description' => isset($endpoint['description']) ? $endpoint['description'] : '',
-                            'parameters'  => isset($endpoint['parameters']) ? $endpoint['parameters'] : null,
-                            'responses'   => isset($endpoint['responses']) ? $endpoint['responses'] : null,
-                            'timestamp'   => $timestamp,
-                        ],
-                    ]);
-                }
-            }
+        foreach (glob("$source/definitions/*.*") as $file) {
+            return $this->pushDefinitions($file, $endpointUrl, $service, $headers, $timestamp);
         }
 
         $timestamp -= 2;
         $url = "{$endpointUrl}/endpoint/{$service}/{$timestamp}";
         (new Client(['http_errors' => true]))->delete($url, ['headers' => $headers]);
+    }
+
+    private function pushEndpoints($file, $endpointUrl, $service, $access, $headers, $timestamp)
+    {
+        $json = file_get_contents($file);
+        $json = strpos($file, '.yml') ? Yaml::parse($json) : json_decode($json, true);
+        if (!$json) {
+            throw new RuntimeException("Failed to read: $file");
+        }
+
+        foreach ($json as $pattern => $paths) {
+            foreach ($paths as $method => $endpoint) {
+                $this->client->put("{$endpointUrl}/endpoint/{$service}/{$method}/$access", [
+                    'headers' => $headers,
+                    'json'    => [
+                        'pattern'     => $pattern,
+                        'description' => isset($endpoint['description']) ? $endpoint['description'] : '',
+                        'parameters'  => isset($endpoint['parameters']) ? $endpoint['parameters'] : null,
+                        'responses'   => isset($endpoint['responses']) ? $endpoint['responses'] : null,
+                        'timestamp'   => $timestamp,
+                    ],
+                ]);
+            }
+        }
+    }
+
+    private function pushDefinitions($file, $endpointUrl, $service, $headers, $timestamp)
+    {
+        $json = file_get_contents($file);
+        $json = strpos($file, '.yml') ? Yaml::parse($json) : json_decode($json, true);
+        if (!$json) {
+            throw new RuntimeException("Failed to read: $file");
+        }
+
+        foreach ($json as $name => $definition) {
+            $type = $definition['type'];
+
+            $this->client->put("{$endpointUrl}/definition/{$service}/{$name}/{$type}", [
+                'headers' => $headers,
+                'json'    => $json = [
+                    'properties' => isset($definition['properties']) ? $definition['properties'] : '',
+                    'timestamp'  => $timestamp,
+                ],
+            ]);
+        }
     }
 }
