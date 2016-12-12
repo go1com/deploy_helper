@@ -27,8 +27,6 @@ php deploy_helper.phar service:endpoint
 
 Build variables values from #stash - The center we store all configurations.
 
-php deploy_helper.phar service:variables
-    http://your.stash.service
-    the_service_you_are_building
-    the_access_token_to_stash
-    --ci-step=the_gitlab_ci_step
+php deploy_helper.phar service:build-docker-compose
+    --stash-url=http://your.stash.service/build/docker-compose/ACCESS_TOKEN_TO_STASH_SERVICE
+    --service=THE_SERVICE_YOU_ARE_BUILDING # Example: microservices:user
