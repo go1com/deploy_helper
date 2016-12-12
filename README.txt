@@ -22,3 +22,13 @@ php deploy_helper.phar service:endpoint
     --service=user
     --username=ADMIN_USERNAME
     --password=ADMIN_PASSWORD
+
+## Variable building
+
+Build variables values from #stash - The center we store all configurations.
+
+php deploy_helper.phar service:variables
+    http://your.stash.service
+    the_service_you_are_building
+    the_access_token_to_stash
+    --ci-step=the_gitlab_ci_step
