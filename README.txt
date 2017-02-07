@@ -22,3 +22,11 @@ php deploy_helper.phar service:endpoint
     --service=user
     --username=ADMIN_USERNAME
     --password=ADMIN_PASSWORD
+
+## Variable building
+
+Build variables values from #stash - The center we store all configurations.
+
+php deploy_helper.phar service:build-docker-compose
+    --stash-url=http://your.stash.service/build/docker-compose/ACCESS_TOKEN_TO_STASH_SERVICE
+    --service=THE_SERVICE_YOU_ARE_BUILDING # Example: microservices:user

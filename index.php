@@ -1,7 +1,8 @@
 <?php
 
-namespace go1\ci_helper;
+namespace go1\deploy_helper;
 
+use go1\deploy_helper\command\DockerComposeBuildCommand;
 use go1\deploy_helper\command\EndpointBuilderCommand;
 use go1\deploy_helper\command\HipchatNotificationCommand;
 use go1\deploy_helper\command\ServiceUpdateCommand;
@@ -12,6 +13,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 $app = new Application('GO1');
 $app->addCommands([
     new ServiceUpdateCommand,
+    new DockerComposeBuildCommand,
     new EndpointBuilderCommand,
     new HipchatNotificationCommand,
 ]);
