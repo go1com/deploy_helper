@@ -16,13 +16,14 @@ class DockerComposeBuildCommand extends Command
     {
         $this
             ->setName('service:build-docker-compose')
-            ->addOption('stash-url', null, InputOption::VALUE_OPTIONAL)
-            ->addOption('service', null, InputOption::VALUE_OPTIONAL)
-            ->addOption('ci-step', null, InputOption::VALUE_OPTIONAL);
+            ->addOption('stash-url', null, InputOption::VALUE_REQUIRED)
+            ->addOption('service', null, InputOption::VALUE_REQUIRED)
+            ->addOption('dry-run', null, InputOption::VALUE_OPTIONAL, '', null);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $dry = $input->hasParameterOption('--dry-run');
         $stashUrl = rtrim($input->getOption('stash-url'), '/');
         $service = $input->getOption('service');
         $file = getcwd() . '/docker-compose.yml';
@@ -31,7 +32,13 @@ class DockerComposeBuildCommand extends Command
             throw new RuntimeException("Docker compose file not found: {$file}");
         }
 
-        return $this->doExecute($stashUrl, $service, $file);
+        if ($compose = $this->doExecute($stashUrl, $service, $file)) {
+            if ($compose = Yaml::dump($compose, 4)) {
+                $dry
+                    ? $output->writeln($compose)
+                    : file_put_contents($file, $compose);
+            }
+        }
     }
 
     private function doExecute(string $stashUrl, string $service, string $file)
@@ -50,6 +57,10 @@ class DockerComposeBuildCommand extends Command
             throw new RuntimeException('Failed to parse docker-compose file: ' . $res->getBody()->getContents());
         }
 
-        file_put_contents($file, Yaml::dump($res));
+        if ($compose = $res->getBody()->getContents()) {
+            if ($compose = json_decode($compose, true)) {
+                return $compose;
+            }
+        }
     }
 }
