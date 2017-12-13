@@ -36,7 +36,7 @@ class ServiceUpdateCommand extends Command
     private function update(OutputInterface $output, $url, $delay, $limit)
     {
         if ($limit > 0) {
-            $res = (new Client)->get($url, ['http_errors' => false]);
+            $res = (new Client)->post($url, ['http_errors' => false]);
             if (!in_array($res->getStatusCode(), [200, 204, 400])) {
                 $output->writeln("[FAILED] Status code: {$res->getStatusCode()}. Try again in 5 seconds.");
                 sleep($delay);
