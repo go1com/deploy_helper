@@ -30,3 +30,14 @@ Build variables values from #stash - The center we store all configurations.
 php deploy_helper.phar service:build-docker-compose
     --stash-url=http://your.stash.service/build/docker-compose/ACCESS_TOKEN_TO_STASH_SERVICE
     --service=THE_SERVICE_YOU_ARE_BUILDING # Example: microservices:user
+
+## Translation extracting
+
+Extract translation strings from source PHP/Twig/YAML files:
+
+deploy-helper translate:extractor \
+    --target=/path/to/resources/translations \
+    --php=/path/php-1 \
+    --php=/php/php-2 \
+    --twig=/path/to/twig-resources \
+    --yaml=/path/to/yaml-files
