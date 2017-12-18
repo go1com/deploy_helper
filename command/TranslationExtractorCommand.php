@@ -51,7 +51,7 @@ class TranslationExtractorCommand extends Command
             $collect = function ($key, $array) use (&$dictionary, &$collect) {
                 foreach ($array as $k => $element) {
                     if (is_string($element)) {
-                        $dictionary->set("$key.$k", $element, 'notify');
+                        $dictionary->set(trim("$key.$k", '.'), $element, 'notify');
                     }
                     elseif (is_array($element)) {
                         $collect("$key.$k", $element);
@@ -59,12 +59,12 @@ class TranslationExtractorCommand extends Command
                 }
             };
 
-            $yaml = function ($file) use (&$collect) {
-                $collect('', @Yaml::parseFile($file, Yaml::PARSE_CUSTOM_TAGS));
+            $loop = function ($file) use (&$collect) {
+                $collect(pathinfo($file)['filename'], @Yaml::parseFile($file, Yaml::PARSE_CUSTOM_TAGS));
             };
 
             foreach ($yaml as $path) {
-                array_map($yaml, glob($path));
+                array_map($loop, glob($path));
             }
         }
 
