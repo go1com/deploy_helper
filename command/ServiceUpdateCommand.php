@@ -27,8 +27,8 @@ class ServiceUpdateCommand extends Command
         $environment = $input->getArgument('environment');
         $delay = $input->getOption('delay');
         $limit = $input->getOption('limit');
-        $url = ('production' === $environment) ? 'https://api.mygo1.com/v3' : "http://api-{$environment}.mygo1.com/v3";
-        $url .= "/{$service}-service/install";
+        $url = ('production' === $environment) ? 'https://api.go1.co' : "https://api-{$environment}.go1.co";
+        $url .= "/{$service}/install";
 
         return $this->update($output, $url, $delay, $limit);
     }
@@ -37,7 +37,12 @@ class ServiceUpdateCommand extends Command
     {
         if ($limit > 0) {
             $res = (new Client)->post($url, ['http_errors' => false]);
-            if (!in_array($res->getStatusCode(), [200, 204, 400])) {
+
+            if (204 == $res->getStatusCode()) {
+                return true;
+            }
+
+            if (in_array($res->getStatusCode(), [200, 400])) {
                 $output->writeln("[FAILED] Status code: {$res->getStatusCode()}. Try again in 5 seconds.");
                 sleep($delay);
 
