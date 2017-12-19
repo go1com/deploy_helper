@@ -12,7 +12,7 @@ curl -sSL -o deploy_helper.phar https://github.com/go1com/deploy_helper/releases
 
 ## Run /install
 
-php deploy_helper.phar service:endpoint rules production
+php deploy_helper.phar service:update rules production
 
 ## Import endpoints
 
