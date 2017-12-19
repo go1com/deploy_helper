@@ -15,15 +15,11 @@ class DockerFileGeneratingCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $file = implode("\n", [
+        file_put_contents(getcwd() . '/Dockerfile', implode("\n", [
             'FROM go1com/php:7-nginx',
             'COPY . /app',
             'RUN rm -rf /app/.git/ && chmod -Rf +w /app/cache/',
             'WORKDIR /app',
-        ]);
-
-        $path = getcwd() . '/docker-compose.yml';
-
-        file_put_contents($path, $file);
+        ]));
     }
 }
