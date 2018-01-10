@@ -29,7 +29,7 @@ class TranslationExtractorCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $dictionary = new MessageCatalogue('en');
+        $dictionary = new MessageCatalogue('template');
 
         if ($php = $input->getOption('php')) {
             $extractor = new PhpExtractor;
@@ -51,7 +51,7 @@ class TranslationExtractorCommand extends Command
             $collect = function ($key, $array) use (&$dictionary, &$collect) {
                 foreach ($array as $k => $element) {
                     if (is_string($element)) {
-                        $dictionary->set(trim("$key.$k", '.'), $element, 'notify');
+                        $dictionary->set($element, '', 'notify');
                     }
                     elseif (is_array($element)) {
                         $collect("$key.$k", $element);
@@ -71,6 +71,7 @@ class TranslationExtractorCommand extends Command
         if ($php || $twig || $yaml) {
             $target = $input->getOption('target');
             (new PoFileDumper)->dump($dictionary, ['path' => $target]);
+            rename("$target/notify.template.po", "$target/template.pot");
         }
     }
 }
