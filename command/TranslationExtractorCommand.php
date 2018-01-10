@@ -51,6 +51,12 @@ class TranslationExtractorCommand extends Command
             $collect = function ($key, $array) use (&$dictionary, &$collect) {
                 foreach ($array as $k => $element) {
                     if (is_string($element)) {
+                        if (strpos($element, '::')) {
+                            if (false === strpos($element, ' ')) {
+                                continue;
+                            }
+                        }
+
                         $dictionary->set($element, '', 'notify');
                     }
                     elseif (is_array($element)) {
