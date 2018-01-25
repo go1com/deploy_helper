@@ -11,7 +11,7 @@
 
 ## Get the command
 
-    curl -sSL -o deploy_helper.phar https://github.com/go1com/deploy_helper/releases/download/v0.2/deploy_helper.phar
+    curl -sSL -o deploy_helper.phar https://github.com/go1com/deploy_helper/releases/download/v0.5/deploy_helper.phar
 
 ## Run /install
 
