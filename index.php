@@ -10,7 +10,8 @@ use go1\deploy_helper\command\ServiceUpdateCommand;
 use go1\deploy_helper\command\TranslationExtractorCommand;
 use Symfony\Component\Console\Application;
 
-require_once __DIR__ . '/vendor/autoload.php';
+is_file($loader = __DIR__ . '/vendor/autoload.php') && require_once $loader;
+is_file($loader = __DIR__ . '/../../../vendor/autoload.php') && require_once $loader;
 
 $app = new Application('GO1');
 $app->addCommands([
