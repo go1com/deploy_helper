@@ -51,7 +51,7 @@ class TranslationExtractorCommand extends Command
             $collect = function ($key, $array) use (&$dictionary, &$collect) {
                 foreach ($array as $k => $element) {
                     if (is_string($element)) {
-                        if (strpos($element, '::')) {
+                        if (strpos($element, '::') ||  preg_match('/^![a-z\_]+$/', $element)) {
                             if (false === strpos($element, ' ')) {
                                 continue;
                             }
